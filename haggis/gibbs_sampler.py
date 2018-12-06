@@ -20,7 +20,7 @@ class gibbs_sampler(object):
     n_dim : int
         Dimensionality (number of free parameters) for the fitted model.
 
-    cdf_accuracy : float, optional
+    cdf_resolution : float, optional
         Tuning parameter. The required resolution for the cumulative
         distribution function.
 
@@ -32,14 +32,14 @@ class gibbs_sampler(object):
         into when insufficient sampling is found.
     """
 
-    def __init__(self, lnlike, prior_transform, n_dim, cdf_accuracy=0.05,
+    def __init__(self, lnlike, prior_transform, n_dim, cdf_resolution=0.025,
                  n_start_grid=10, n_split_grid=2):
 
         self.lnlike = lnlike
         self.prior_transform = prior_transform
         self.n_dim = n_dim
 
-        self.cdf_accuracy = cdf_accuracy
+        self.cdf_resolution = cdf_resolution
         self.n_start_grid = n_start_grid
         self.n_split_grid = n_split_grid
 
@@ -167,7 +167,7 @@ class gibbs_sampler(object):
 
         # Propose new bin edges to try to achieve desired cdf sampling.
         for i in range(len(diffs)):
-            if diffs[i] > self.cdf_accuracy:
+            if diffs[i] > self.cdf_resolution:
                 new_edges = new_edges[:-1]
                 new_edges += np.linspace(self.edges[i], self.edges[i+1],
                                          self.n_split_grid+1).tolist()
